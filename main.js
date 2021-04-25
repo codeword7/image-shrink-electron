@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu } = require('electron');
+const { app, BrowserWindow, Menu, globalShortcut } = require('electron');
 //set ENV
 process.env.NODE_ENV = 'development';
 //check desired requirement
@@ -14,6 +14,7 @@ const createMainWindow = () => {
     icon: `${__dirname}/assets/icons/Icon_256x256.png`,
     // icon option is for windows only user.
     resizable: isDev,
+    backgroundColor: 'white'
   })
   mainWindow.loadFile('./app/index.html')
 }
@@ -26,6 +27,9 @@ app.on('ready', () => {
   const mainMenu = Menu.buildFromTemplate(menu);
   Menu.setApplicationMenu(mainMenu);
 
+  // add global shorcut
+  globalShortcut.register('CmdOrCtrl+R', () => mainWindow.reload())
+  globalShortcut.register(isMac ? 'Cmd+Alt+I' : 'Ctrl+Shift+I', () => mainWindow.toggleDevTools())
   // remove garbage
   mainWindow.on('closed', () => mainWindow = null)
 })
@@ -38,6 +42,7 @@ const menu = [
     submenu: [
       {
         label: 'Quit',
+        accelerator: 'CmdOrCtrl+W', // shortcut for mac + windows for quiting app
         click: () => app.quit()
       }
     ]
