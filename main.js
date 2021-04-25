@@ -38,16 +38,22 @@ app.on('ready', () => {
 const menu = [
   ...(isMac ? [{ role: 'appMenu' }] : []),
   {
-    label: 'File',
-    submenu: [
+    role: 'fileMenu',
+  },
+  ...(isDev
+    ? [
       {
-        label: 'Quit',
-        accelerator: 'CmdOrCtrl+W', // shortcut for mac + windows for quiting app
-        click: () => app.quit()
-      }
+        label: 'Developer',
+        submenu: [
+          { role: 'reload' },
+          { role: 'forcereload' },
+          { type: 'separator' },
+          { role: 'toggledevtools' },
+        ],
+      },
     ]
-  }
-]
+    : []),
+];
 
 // default behaviour of macOS
 app.on('window-all-closed', () => {
