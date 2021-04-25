@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, Menu } = require('electron');
 //set ENV
 process.env.NODE_ENV = 'development';
 //check desired requirement
@@ -18,7 +18,31 @@ const createMainWindow = () => {
   mainWindow.loadFile('./app/index.html')
 }
 
-app.on('ready', createMainWindow)
+app.on('ready', () => {
+
+  createMainWindow()
+
+  // create menu initialize
+  const mainMenu = Menu.buildFromTemplate(menu);
+  Menu.setApplicationMenu(mainMenu);
+
+  // remove garbage
+  mainWindow.on('closed', () => mainWindow = null)
+})
+
+// create menu for app
+const menu = [
+  ...(isMac ? [{ role: 'appMenu' }] : []),
+  {
+    label: 'File',
+    submenu: [
+      {
+        label: 'Quit',
+        click: () => app.quit()
+      }
+    ]
+  }
+]
 
 // default behaviour of macOS
 app.on('window-all-closed', () => {
@@ -26,7 +50,7 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
-
+// check instance of active app
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createMainWindow()
