@@ -5,8 +5,9 @@ const imagemin = require('imagemin')
 const imageminMonzjpeg = require('imagemin-mozjpeg')
 const imageminPngquant = require('imagemin-pngquant')
 const slash = require('slash')
-//set ENV
-process.env.NODE_ENV = 'development';
+const log = require('electron-log')
+//set ENV either to 'production' or 'development'
+process.env.NODE_ENV = 'production';
 //check desired requirement
 const isDev = process.env.NODE_ENV !== 'production' ? true : false;
 const isMac = process.platform === 'darwin' ? true : false;
@@ -119,10 +120,11 @@ const shrinkImage = async ({ imgPath, quality, dest }) => {
         })
       ]
     })
-
+    log.info(files)
     shell.openPath(dest)
+    mainWindow.webContents.send('image:done') // send event to front-end
   } catch (error) {
-    console.log(error)
+    log.error(error)
   }
 }
 // default behaviour of macOS
