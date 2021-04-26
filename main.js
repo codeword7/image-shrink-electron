@@ -11,13 +11,23 @@ let aboutWindow;
 const createMainWindow = () => {
   mainWindow = new BrowserWindow({
     title: 'ImageShrink',
-    width: 500,
+    width: isDev ? 800 : 500,
     height: 600,
     icon: `${__dirname}/assets/icons/Icon_256x256.png`,
     // icon option is for windows only user.
     resizable: isDev,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true,
+    }
   })
+
+  if (isDev) {
+    mainWindow.webContents.openDevTools()
+  }
+
   mainWindow.loadFile('./app/index.html')
 }
 // create about window
